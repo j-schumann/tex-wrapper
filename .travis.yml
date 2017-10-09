@@ -17,7 +17,7 @@ matrix:
     - php: 7.1
       env:
         - TEST_COVERAGE=true
-    - nightly
+    - php: nightly
 
 before_install:
   - sudo apt-get -qq update
