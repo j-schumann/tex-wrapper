@@ -17,6 +17,7 @@ matrix:
     - php: 7.1
       env:
         - TEST_COVERAGE=true
+    - php: 7.2
     - php: nightly
 
 before_install:
