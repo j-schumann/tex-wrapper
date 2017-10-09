@@ -2,8 +2,14 @@ sudo: false
 
 language: php
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.local
+
 env:
   global:
+    - COMPOSER_ARGS="--no-interaction --prefer-source"
     - CS_CHECK=true
 
 matrix:
@@ -20,8 +26,8 @@ before_install:
 
 install:
   - travis_retry composer install $COMPOSER_ARGS
-  - composer info -i
-  
+  - composer info
+
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi

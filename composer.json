@@ -1,0 +1,33 @@
+{
+    "name": "vrok/tex-wrapper",
+    "description": "PDFLatex wrapper class",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://www.vrok.de/",
+    "keywords": ["latex", "pdflatex", "wrapper"],
+    "minimum-stability": "dev",
+
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "^6.3.1",
+        "zendframework/zend-coding-standard": "~1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TexWrapper\\": "src/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v"
+    }
+}
