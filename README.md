@@ -5,6 +5,8 @@ by PHP itself.
 
 Requires pdflatex to be installed, e.g. in Debian package texlive-latex-base.
 
+[![Build Status](https://travis-ci.org/j-schumann/tex-wrapper.svg?branch=master)](https://travis-ci.org/j-schumann/tex-wrapper) [![Coverage Status](https://coveralls.io/repos/github/j-schumann/tex-wrapper/badge.svg?branch=master)](https://coveralls.io/github/j-schumann/tex-wrapper?branch=master)
+
 ## Usage
 
 ```php
@@ -16,15 +18,14 @@ $wrapper = new TexWrapper\Wrapper();
 $wrapper = new TexWrapper\Wrapper('/my/path/texfile');
 
 // generate the TeX file
-$texContent = $validTex =
-'\documentclass{article}
-\begin{document}
-\title{Introduction to \LaTeX{}}
-\author{Author Name}
-\maketitle
-\section{Introduction}
-Here is the text of your introduction.
-\end{document}';
+$texContent = '\documentclass{article}
+        \begin{document}
+        \title{Introduction to \LaTeX{}}
+        \author{Author Name}
+        \maketitle
+        \section{Introduction}
+        Here is the text of your introduction.
+        \end{document}';
 $wrapper->saveTex($texContent);
 
 // to customize log output or apply texfot to filter unnecessary messages
