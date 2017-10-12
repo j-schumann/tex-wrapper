@@ -210,6 +210,20 @@ class WrapperTest extends TestCase
         unlink($wrapper->getPdfFile());
     }
 
+    public function testPostProcessWithoutPdf()
+    {
+        $wrapper = new Wrapper();
+
+        $result = $wrapper->postProcess('cp %file%.bak %file% 2>&1');
+        $this->assertEquals($result, false);
+
+        $errors = $wrapper->getErrors();
+        $this->assertEquals(
+            ['postProcessor' => 'PDF file not found, build not started or failed?'],
+            $errors
+        );
+    }
+
     public function testFailingPostProcessor()
     {
         $wrapper = new Wrapper();
