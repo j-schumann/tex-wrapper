@@ -231,7 +231,8 @@ class Wrapper
     }
 
     /**
-     * Retrieve all messages from the last PDF build if some fatal error occured.
+     * Retrieve all messages from the last PDF build (and post-processing) if
+     * some fatal error occured.
      *
      * @return array
      */
