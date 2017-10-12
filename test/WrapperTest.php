@@ -47,7 +47,10 @@ class WrapperTest extends TestCase
     public function testGetCommand()
     {
         $wrapper = new Wrapper();
-        $this->assertEquals($wrapper->getCommand(), 'pdflatex --file-line-error');
+        $this->assertEquals(
+            $wrapper->getCommand(),
+            'pdflatex --file-line-error --interaction=nonstopmode --output-directory=%dir% %file%'
+        );
     }
 
     public function testCanSaveTex()
@@ -94,7 +97,8 @@ class WrapperTest extends TestCase
 
         $errors = $wrapper->getErrors();
         $this->assertEquals($errors, [
-            'pdflatex' => 'Pdflatex is not installed or not within the $PATH!',
+            'engine' =>
+                'Command not found, engine is not installed or not within the $PATH!',
         ]);
     }
 
@@ -135,6 +139,8 @@ class WrapperTest extends TestCase
         $this->assertFileNotExists($file.'.out');
         $this->assertFileNotExists(dirname($file).DIRECTORY_SEPARATOR.'missfont.log');
         $this->assertFileNotExists(dirname($file).DIRECTORY_SEPARATOR.'texput.log');
+
+        unlink($wrapper->getPdfFile());
     }
 
     public function testReturnsMissfonts()
@@ -155,6 +161,8 @@ class WrapperTest extends TestCase
         $this->assertEquals($wrapper->getErrors(), [
             'missingFonts' => 'a-font-is-missing',
         ]);
+
+        unlink($wrapper->getPdfFile());
     }
 
     /**
@@ -172,11 +180,11 @@ class WrapperTest extends TestCase
 
         $errors = $wrapper->getErrors();
         $this->assertInternalType('array', $errors);
-        $this->assertArrayHasKey('pdflatex', $errors);
-        $this->assertInternalType('string', $errors['pdflatex']);
-        $this->assertGreaterThan(0, strlen($errors['pdflatex']));
+        $this->assertArrayHasKey('engine', $errors);
+        $this->assertInternalType('string', $errors['engine']);
+        $this->assertGreaterThan(0, strlen($errors['engine']));
 
-        $this->assertEquals($wrapper->getLog(), $errors['pdflatex']);
+        $this->assertEquals($wrapper->getLog(), $errors['engine']);
     }
 
     /**
@@ -193,10 +201,72 @@ class WrapperTest extends TestCase
 
         $errors = $wrapper->getErrors();
         $this->assertInternalType('array', $errors);
-        $this->assertArrayHasKey('pdflatex', $errors);
-        $this->assertInternalType('string', $errors['pdflatex']);
-        $this->assertGreaterThan(0, strlen($errors['pdflatex']));
+        $this->assertArrayHasKey('engine', $errors);
+        $this->assertInternalType('string', $errors['engine']);
+        $this->assertGreaterThan(0, strlen($errors['engine']));
 
-        $this->assertEquals($wrapper->getLog(), $errors['pdflatex']);
+        $this->assertEquals($wrapper->getLog(), $errors['engine']);
+
+        unlink($wrapper->getPdfFile());
+    }
+
+    public function testFailingPostProcessor()
+    {
+        $wrapper = new Wrapper();
+        $wrapper->saveTex($this->validTex);
+        $wrapper->buildPdf();
+
+        $result = $wrapper->postProcess('cp %file%.bak %file% 2>&1');
+        $this->assertEquals($result, false);
+
+        $errors = $wrapper->getErrors();
+        $this->assertInternalType('array', $errors);
+        $this->assertArrayHasKey('postProcessor', $errors);
+        $this->assertInternalType('string', $errors['postProcessor']);
+        $this->assertGreaterThan(0, strlen($errors['postProcessor']));
+
+        unlink($wrapper->getPdfFile());
+    }
+
+    public function testPostProcessorRemovesPdf()
+    {
+        $wrapper = new Wrapper();
+        $wrapper->saveTex($this->validTex);
+        $wrapper->buildPdf();
+
+        $result = $wrapper->postProcess('rm %file%');
+        $this->assertEquals($result, false);
+
+        $errors = $wrapper->getErrors();
+        $this->assertEquals(
+            ['postProcessor' => 'post-processing removed the PDF!'],
+            $errors
+        );
+    }
+
+    public function testPostProcessingWorks()
+    {
+        $wrapper = new Wrapper();
+        $wrapper->saveTex($this->validTex);
+        $wrapper->buildPdf();
+
+        $result = $wrapper->postProcess('cp %file% %file%.bak');
+        $this->assertEquals($result, true);
+
+        $errors = $wrapper->getErrors();
+        $this->assertEquals($errors, []);
+
+        $this->assertFileExists($wrapper->getFilename().'.pdf');
+        $this->assertFileExists($wrapper->getFilename().'.pdf.bak');
+        $this->assertGreaterThan(0, filesize($wrapper->getPdfFile()));
+
+        $this->assertEquals(
+            filesize($wrapper->getPdfFile()),
+            filesize($wrapper->getPdfFile().'.bak')
+        );
+
+        unlink($wrapper->getPdfFile());
+        // as soon as the pdf file is deleted getPdfFile returns NULL...
+        unlink($wrapper->getFilename().'.pdf.bak');
     }
 }
