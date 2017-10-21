@@ -127,7 +127,7 @@ class Wrapper
      */
     public function deleteTex()
     {
-        @unlink($this->filename);
+        file_exists($this->filename) && unlink($this->filename);
     }
 
     /**
@@ -166,26 +166,29 @@ class Wrapper
         }
 
         $this->log = implode("\n", $output);
-        if ($return != 0) {
-            // latex command returned an exit state > 0,
+        // latex command returned an exit state > 0 or the PDF wasn't created
+        // (e.g. lualatex fails with "fix your writable cache path" but exit
+        // code is still 0...)
+        if ($return != 0 || ! file_exists($this->filename.'.pdf')) {
             // return the complete output for debugging
             $this->errors['engine'] = $this->log;
         }
 
         // remove unwanted additional files
-        @unlink($this->filename.'.out');
-        @unlink($this->filename.'.aux');
-        @unlink($this->filename.'.log');
+        file_exists($this->filename.'.out') && unlink($this->filename.'.out');
+        file_exists($this->filename.'.aux') && unlink($this->filename.'.aux');
+        file_exists($this->filename.'.log') && unlink($this->filename.'.log');
 
         // good hint for missing packages
-        $missingFonts = dirname($this->filename).DIRECTORY_SEPARATOR.'missfont.log';
+        $missingFonts = dirname($this->filename).'/missfont.log';
         if (file_exists($missingFonts)) {
             $this->errors['missingFonts'] = file_get_contents($missingFonts);
-            @unlink($missingFonts);
+            unlink($missingFonts);
         }
 
         // sometimes the texput.log is generated, e.g. when the input file does not exist
-        @unlink(dirname($this->filename).DIRECTORY_SEPARATOR.'texput.log');
+        file_exists(dirname($this->filename).'/texput.log')
+            && unlink(dirname($this->filename).'/texput.log');
 
         return file_exists($this->filename.'.pdf');
     }

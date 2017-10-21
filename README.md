@@ -30,7 +30,7 @@ $texContent = '\documentclass{article}
 $wrapper->saveTex($texContent);
 
 // to customize log output or apply texfot to filter unnecessary messages
-$wrapper->setCommand('texfot '.$wrapper->getCommand());
+$wrapper->setCommand('texfot '.$wrapper->getCommand().' 2>&1');
 
 // to use lualatex instead of pdflatex
 $cmd = 'lualatex --file-line-error '
@@ -85,3 +85,17 @@ if ($result) {
     var_dump($errors['postProcessor']);
 }
 ```
+
+### Note on texfot
+Texfot tries to remove unnecessary from the LaTeX engine output. But while
+pdflatex/lualatex outputs everything including all errors to the stdout, texfot
+writes errors to stderr, so we have to include them in stderr by using "2>&1"
+in the command for the wrapper to log them.
+Texfot uses the temporary file /tmp/fot which is not deleted after execution so
+it can cause errors when used by different users which can not write the others
+files.
+
+### Note on LuaLaTeX
+The lualatex command requires access to a working directory in $HOME, e.g.
+$HOME/.texlive2017, depending on the installation and version. Make sure to
+create it for the user executing PHP before using the script.
