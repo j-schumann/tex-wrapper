@@ -6,7 +6,7 @@
  * @author      Jakob Schumann <schumann@vrok.de>
  */
 
-namespace VrokTest;
+namespace TexWrapper\Tests;
 
 use PHPUnit\Framework\TestCase;
 use TexWrapper\Wrapper;
@@ -97,8 +97,7 @@ class WrapperTest extends TestCase
 
         $errors = $wrapper->getErrors();
         $this->assertEquals($errors, [
-            'engine' =>
-                'Command not found, engine is not installed or not within the $PATH!',
+            'engine' => 'Command not found, engine is not installed or not within the $PATH!',
         ]);
     }
 

@@ -1,3 +1,14 @@
+###> composer ###
+vendor
 composer.lock
-composer.phar
-/vendor/
+###< composer ###
+
+###> friendsofphp/php-cs-fixer ###
+.php_cs.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+.phpunit.result.cache
+clover.xml
+phpunit.xml
+###< phpunit/phpunit ###
