@@ -72,7 +72,7 @@ class WrapperTest extends TestCase
         $wrapper->saveTex($this->validTex);
         $this->assertFileExists('candeletetex');
         $wrapper->deleteTex();
-        $this->assertFileNotExists('candeletetex');
+        $this->assertFileDoesNotExist('candeletetex');
     }
 
     public function testAutodeleteTex()
@@ -83,7 +83,7 @@ class WrapperTest extends TestCase
         $this->assertFileExists($file);
 
         $wrapper = null;
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
     }
 
     public function testWrongCommand()
@@ -133,11 +133,11 @@ class WrapperTest extends TestCase
 
         $wrapper->buildPdf();
 
-        $this->assertFileNotExists($file.'.aux');
-        $this->assertFileNotExists($file.'.log');
-        $this->assertFileNotExists($file.'.out');
-        $this->assertFileNotExists(dirname($file).DIRECTORY_SEPARATOR.'missfont.log');
-        $this->assertFileNotExists(dirname($file).DIRECTORY_SEPARATOR.'texput.log');
+        $this->assertFileDoesNotExist($file.'.aux');
+        $this->assertFileDoesNotExist($file.'.log');
+        $this->assertFileDoesNotExist($file.'.out');
+        $this->assertFileDoesNotExist(dirname($file).DIRECTORY_SEPARATOR.'missfont.log');
+        $this->assertFileDoesNotExist(dirname($file).DIRECTORY_SEPARATOR.'texput.log');
 
         unlink($wrapper->getPdfFile());
     }
@@ -178,9 +178,9 @@ class WrapperTest extends TestCase
         $this->assertEquals($result, false);
 
         $errors = $wrapper->getErrors();
-        $this->assertInternalType('array', $errors);
+        $this->assertIsArray($errors);
         $this->assertArrayHasKey('engine', $errors);
-        $this->assertInternalType('string', $errors['engine']);
+        $this->assertIsString($errors['engine']);
         $this->assertGreaterThan(0, strlen($errors['engine']));
 
         $this->assertEquals($wrapper->getLog(), $errors['engine']);
@@ -199,9 +199,9 @@ class WrapperTest extends TestCase
         $this->assertEquals($result, true);
 
         $errors = $wrapper->getErrors();
-        $this->assertInternalType('array', $errors);
+        $this->assertIsArray($errors);
         $this->assertArrayHasKey('engine', $errors);
-        $this->assertInternalType('string', $errors['engine']);
+        $this->assertIsString($errors['engine']);
         $this->assertGreaterThan(0, strlen($errors['engine']));
 
         $this->assertEquals($wrapper->getLog(), $errors['engine']);
@@ -233,9 +233,9 @@ class WrapperTest extends TestCase
         $this->assertEquals($result, false);
 
         $errors = $wrapper->getErrors();
-        $this->assertInternalType('array', $errors);
+        $this->assertIsArray($errors);
         $this->assertArrayHasKey('postProcessor', $errors);
-        $this->assertInternalType('string', $errors['postProcessor']);
+        $this->assertIsString($errors['postProcessor']);
         $this->assertGreaterThan(0, strlen($errors['postProcessor']));
 
         unlink($wrapper->getPdfFile());
