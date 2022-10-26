@@ -5,9 +5,8 @@
     "license": "MIT",
     "homepage": "https://www.vrok.de/",
     "keywords": ["latex", "pdflatex", "wrapper"],
-
     "require": {
-        "php": "^7.4|^8"
+        "php": ">=7.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer":  "^2.16.3",
