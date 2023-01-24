@@ -1,13 +1,13 @@
 {
     "name": "vrok/tex-wrapper",
+    "version": "1.2.0",
     "description": "PDFLatex wrapper class",
     "type": "library",
     "license": "MIT",
     "homepage": "https://www.vrok.de/",
     "keywords": ["latex", "pdflatex", "wrapper"],
-
     "require": {
-        "php": "^7.4"
+        "php": ">=7.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer":  "^2.16.3",
